@@ -1,6 +1,5 @@
 import yaml
 import os
-from aiogram import Bot
 
 
 def parent(path):
