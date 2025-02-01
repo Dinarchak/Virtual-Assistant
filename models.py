@@ -1,17 +1,46 @@
-from tortoise.models import Model
-from tortoise import fields
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    mapped_column,
+    relationship,
+    Mapped
+)
 
-class ProcessType(Model):
-    id = fields.IntField(primary_key=True)
-    name = fields.CharField(max_length=255)
+from sqlalchemy import ForeignKey, String
 
-class Process(Model):
-    id = fields.IntField(primary_key=True)
-    name = fields.CharField(max_length=255)
-    type = fields.ForeignKeyField('models.ProcessType', on_delete=fields.base.OnDelete.CASCADE)
+from typing import (
+    List
+)
 
-class LifePeriods(Model):
-    id = fields.IntField(primary_key=True)
-    name = fields.CharField(max_length=255)
-    start = fields.DatetimeField(auto_now_add=True)
-    end = fields.DatetimeField(null=True)
+from datetime import datetime
+
+class Base(DeclarativeBase):
+    pass
+
+class ProcessType(Base):
+    __tablename__ = 'processtype'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(255))
+
+    processes: Mapped[List['Process']] = relationship(back_populates='type')
+
+class Process(Base):
+    __tablename__ = 'process'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(255))
+
+    type_id: Mapped[int] = mapped_column(ForeignKey('processtype.id'))
+    type: Mapped['ProcessType'] = relationship(back_populates='processes')
+
+    life_periods: Mapped[List['LifePeriod']] = relationship(back_populates='process')
+
+class LifePeriod(Base):
+    __tablename__ = 'lifeperiod'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    start: Mapped[datetime] = mapped_column()
+    end: Mapped[datetime] = mapped_column()
+
+    process_id: Mapped[int] = mapped_column(ForeignKey('process.id'))
+    process: Mapped['Process'] = relationship(back_populates='life_periods')
+    
