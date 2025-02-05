@@ -22,7 +22,7 @@ class ProcessType(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255))
 
-    processes: Mapped[List['Process']] = relationship(back_populates='type')
+    processes: Mapped[List['Process']] = relationship(back_populates='type', cascade="all, delete")
 
 class Process(Base):
     __tablename__ = 'process'
@@ -33,7 +33,7 @@ class Process(Base):
     type_id: Mapped[int] = mapped_column(ForeignKey('processtype.id'))
     type: Mapped['ProcessType'] = relationship(back_populates='processes')
 
-    life_periods: Mapped[List['LifePeriod']] = relationship(back_populates='process')
+    life_periods: Mapped[List['LifePeriod']] = relationship(back_populates='process', cascade="all, delete")
 
 class LifePeriod(Base):
     __tablename__ = 'lifeperiod'
