@@ -4,14 +4,10 @@ from models import Process, LifePeriod
 from datetime import datetime
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
+from settings import config
 
 closed_list = []
 process_ids = {}
-
-def process_end_callback(procs):
-    print(procs.info['name'], process_ids)
-    closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']], start=datetime.fromtimestamp(procs.create_time()), end=datetime.now()))
-
 
 def find_procs_by_name(processes):
     res = []
@@ -24,9 +20,12 @@ def find_procs_by_name(processes):
                     break
     return res
 
+def process_end_callback(procs):
+    print(procs.info['name'], process_ids)
+    closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']], start=datetime.fromtimestamp(procs.create_time()), end=datetime.now()))
 
 def start_tracking():
-    engine = create_engine('sqlite:///db.sqlite3', echo=True)
+    engine = create_engine(config['db_url'], echo=True)
     with Session(engine) as session:
         all_processes = list(session.scalars(select(Process)))
         for procs in all_processes:

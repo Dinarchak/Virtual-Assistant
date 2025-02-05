@@ -1,10 +1,1 @@
-Programs:
-  - name: firefox.exe
-    group: None
-  - name: Telegram.exe
-    group: entertainment
-  - name: code.exe
-    group: coding
-    pid: 16220
-  - name: HYP.exe
-    group: entertainment
+db_url: 'sqlite:///db.sqlite3'
