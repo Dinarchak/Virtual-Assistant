@@ -13,8 +13,17 @@ def add_app(type, name):
     add_app_foo(name, type)
 
 @cli.command()
-def delete_procs():
-    click.echo('Удалить файлы из списка')
+@click.argument('name', nargs=-1, required=True)
+def delete_app(name):
+    delete_app_foo(name)
+
+@cli.command()
+def show_apps():
+    apps = show_apps_foo()
+    click.echo('Список отслеживаемых програм:')
+    for k, v in enumerate(apps):
+        print(f'{k}. {v.name}')
+    
 
 @cli.command()
 def start_tracking():
