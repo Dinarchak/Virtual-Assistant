@@ -8,12 +8,10 @@ def add_app(name, type_name):
     engine = create_engine(config['db_url'])
     with Session(engine) as session:
         type = session.scalars(select(ProcessType).where(ProcessType.name==type_name)).first()
-        print(type)
         if type is None:
             click.echo('Нераспознанные тип программы')        
         else:
             procs = Process(name=name, type_id=type.id)
             session.add(procs)
             session.commit()
-            click.echo(f"Программа '{name}' добавлена в список отслеживаемых")
         
