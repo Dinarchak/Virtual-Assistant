@@ -1,13 +1,16 @@
 import click
-from start_tracking import start_tracking
+from start_tracking import start_tracking as start_tracking_foo
+from add_app import add_app as add_app_foo
 
 @click.group()
 def cli():
     pass
 
 @cli.command()
-def add_procs():
-    click.echo('Добавить новый файл в список отслеживаемых')
+@click.option('-t', '--type', help='Категория программы', required=True)
+@click.option('-n', '--name', help='Имя программы', required=True)
+def add_app(type, name):
+    add_app_foo(name, type)
 
 @cli.command()
 def delete_procs():
