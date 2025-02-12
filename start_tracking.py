@@ -22,7 +22,12 @@ def find_procs_by_name(processes):
 
 def process_end_callback(procs):
     print(procs.info['name'], process_ids)
-    closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']], start=datetime.fromtimestamp(procs.create_time()), end=datetime.now()))
+    now = datetime.now()
+    started_at = datetime.fromtimestamp(procs.create_time())
+    closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']],
+                                  start=started_at,
+                                  end=now,
+                                  delta=(now - started_at).total_seconds()))
 
 def start_tracking():
     engine = create_engine(config['db_url'], echo=True)
