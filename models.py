@@ -5,7 +5,11 @@ from sqlalchemy.orm import (
     Mapped
 )
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, String, create_engine
+
+# from sqlalchemy import create_engine
+# from settings import config
+
 
 from typing import (
     List
@@ -40,7 +44,10 @@ class LifePeriod(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     start: Mapped[datetime] = mapped_column()
     end: Mapped[datetime] = mapped_column()
+    delta: Mapped[int] = mapped_column(default=0)
 
     process_id: Mapped[int] = mapped_column(ForeignKey('process.id'))
     process: Mapped['Process'] = relationship(back_populates='life_periods')
-    
+
+# engine = create_engine(config['db_url'])
+# Base.metadata.create_all(engine)
