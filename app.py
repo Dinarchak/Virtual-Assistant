@@ -3,6 +3,7 @@ from start_tracking import start_tracking as start_tracking_foo
 from add_app import add_app as add_app_foo
 from delete_app import delete_app as delete_app_foo
 from show_apps import show_apps as show_apps_foo
+from get_stats import get_stats as get_stats_foo
 
 @click.group()
 def cli():
@@ -34,8 +35,14 @@ def start_tracking():
     start_tracking_foo()
 
 @cli.command()
-def show_statistic():
-    click.echo('Показать статистику')
+@click.option('--start-time', help='Начало отсчета', default=None)
+@click.option('--end-time', help='конец отсчета', default=None)
+@click.option('--delta', help='Промежуток отсчета', default='1d')
+@click.option('--chart-type', help='Тип диаграммы', type=click.INT, default=0)
+def show_statistic(start_time, end_time, delta, chart_type):
+    get_stats_foo(start_time, end_time, delta, chart_type)
+
+
 
 if __name__ == '__main__':
     cli()
