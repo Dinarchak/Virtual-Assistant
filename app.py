@@ -2,7 +2,7 @@ import click
 from start_tracking import start_tracking as start_tracking_foo
 from add_app import add_app as add_app_foo
 from delete_app import delete_app as delete_app_foo
-from show_apps import show_apps as show_apps_foo
+from get_apps import get_apps as get_apps_foo
 from get_stats import get_stats as get_stats_foo
 
 @click.group()
@@ -23,10 +23,10 @@ def delete_app(name):
 
 @cli.command()
 def show_apps():
-    apps = show_apps_foo()
+    apps = get_apps_foo()
     click.echo('Список отслеживаемых програм:')
     for k, v in enumerate(apps):
-        print(f'{k}. {v.name}')
+        click.echo(f'{k}. {v.name}')
     
 
 @cli.command()

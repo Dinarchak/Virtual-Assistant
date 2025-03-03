@@ -4,14 +4,22 @@ from settings import config
 from models import Process, ProcessType
 import click
 
-def add_app(name, type_name):
+
+def add_app(name: str, type_name: int) -> None:
+    """Добавить новое приложение в список отслеживаемого
+
+    Args:
+        name (str): имя приложения
+        type_name (int): тип приложения
+    """
     engine = create_engine(config['db_url'])
     with Session(engine) as session:
-        type = session.scalars(select(ProcessType).where(ProcessType.name==type_name)).first()
+        type = session.scalars(
+            select(ProcessType).where(ProcessType.name == type_name)
+            ).first()
         if type is None:
-            click.echo('Нераспознанные тип программы')        
+            click.echo('Нераспознанные тип программы')
         else:
             procs = Process(name=name, type_id=type.id)
             session.add(procs)
             session.commit()
-        

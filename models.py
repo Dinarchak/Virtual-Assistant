@@ -5,11 +5,11 @@ from sqlalchemy.orm import (
     Mapped
 )
 
-from sqlalchemy import ForeignKey, String, create_engine
+from sqlalchemy import ForeignKey, String
 
 # from sqlalchemy import create_engine
+# from sqlalchemy import create_engine
 # from settings import config
-
 
 from typing import (
     List
@@ -17,8 +17,10 @@ from typing import (
 
 from datetime import datetime
 
+
 class Base(DeclarativeBase):
     pass
+
 
 class ProcessType(Base):
     __tablename__ = 'processtype'
@@ -27,6 +29,7 @@ class ProcessType(Base):
     name: Mapped[str] = mapped_column(String(255))
 
     processes: Mapped[List['Process']] = relationship(back_populates='type', cascade="all, delete")
+
 
 class Process(Base):
     __tablename__ = 'process'
@@ -39,15 +42,17 @@ class Process(Base):
 
     life_periods: Mapped[List['LifePeriod']] = relationship(back_populates='process', cascade="all, delete")
 
+
 class LifePeriod(Base):
     __tablename__ = 'lifeperiod'
     id: Mapped[int] = mapped_column(primary_key=True)
     start: Mapped[datetime] = mapped_column()
     end: Mapped[datetime] = mapped_column()
-    delta: Mapped[int] = mapped_column(default=0)
+    delta: Mapped[int] = mapped_column(default=0) # длительность периода в секундах
 
     process_id: Mapped[int] = mapped_column(ForeignKey('process.id'))
     process: Mapped['Process'] = relationship(back_populates='life_periods')
+
 
 # engine = create_engine(config['db_url'])
 # Base.metadata.create_all(engine)
