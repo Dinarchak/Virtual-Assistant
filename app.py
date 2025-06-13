@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta
 from commands.start_tracking import start_tracking as start_tracking_foo
-from commands.add_app import add_app as add_app_foo
-from delete_app import delete_app as delete_app_foo
-from commands.get_apps import get_apps as get_apps_foo
 from commands.get_stats import get_stats as get_stats_foo
+from commands.get_apps import get_apps as get_apps_foo
+from commands.add_app import add_app as add_app_foo
+from commands.delete_app import delete_app as delete_app_foo
+from datetime import datetime, timedelta
 from settings import config
 import click
 
