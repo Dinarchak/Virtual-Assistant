@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from settings import config
 from datetime import timedelta, datetime
-from charts import HourlyBar, HourlyScale
+from charts import Chart
 
 
 def get_stats(start_time=None, end_time=None, delta='1d', chart_type=0):
@@ -13,8 +13,8 @@ def get_stats(start_time=None, end_time=None, delta='1d', chart_type=0):
     }
 
     charts = {
-        0: HourlyBar,
-        1: HourlyScale
+        2: Chart.week_stat,
+        3: Chart.daily_stat
     }
 
     if start_time is None:

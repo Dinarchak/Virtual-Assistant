@@ -2,7 +2,7 @@ import psutil
 import os
 from typing import List, Dict
 from models import Process, LifePeriod
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from settings import config
@@ -43,10 +43,29 @@ def process_end_callback(procs: psutil.Process) -> None:
     """
     now = datetime.now()
     started_at = datetime.fromtimestamp(procs.create_time())
-    closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']],
+
+    if started_at.day == now.day:
+        closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']],
                                   start=started_at,
                                   end=now,
                                   delta=(now - started_at).total_seconds()))
+        return
+    
+    next_day_start = started_at + timedelta(days=1)
+    next_day_start -= timedelta(hours=started_at.hour,
+                                minutes=started_at.minute,
+                                seconds=started_at.second,
+                                microseconds=started_at.microsecond)
+
+    closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']],
+                                start=started_at,
+                                end=next_day_start,
+                                delta=(next_day_start - started_at).total_seconds()))
+    closed_list.append(LifePeriod(process_id=process_ids[procs.info['name']],
+                                start=next_day_start,
+                                end=now,
+                                delta=(now - next_day_start).total_seconds()))
+        
 
 
 def start_tracking() -> None:
