@@ -14,24 +14,24 @@ def cli():
 @cli.command()
 @click.option('-t', '--type', help='Категория программы', required=True)
 @click.option('-n', '--name', help='Имя программы', required=True)
-def add_app(type, name):
+def add(type, name):
     add_app_foo(name, type)
     click.echo(f"Программа '{name}' добавлена в список отслеживаемых")
 
-@cli.command()
+@cli.command(name='del')
 @click.argument('name', nargs=-1, required=True)
-def delete_app(name):
+def delelte_app(name):
     delete_app_foo(name)
 
 @cli.command()
-def show_apps():
+def list():
     apps = get_apps_foo()
     click.echo('Список отслеживаемых програм:')
     for k, v in enumerate(apps):
         click.echo(f'{k}. {v.name}')
 
 @cli.command()
-def start_tracking():
+def start():
     click.echo('Отслживаю работу процессов...')
     start_tracking_foo()
 
@@ -44,18 +44,17 @@ def show_statistic(start_time, end_time, delta, chart_type):
     get_stats_foo(start_time, end_time, delta, chart_type)
 
 @cli.command()
-def week_statistic():
+def week_stat():
     start = datetime.now()
     start -= timedelta(hours=start.hour, minutes=start.minute, seconds=start.second)
     start -= timedelta(days=start.weekday())
     get_stats_foo(start_time=datetime.strftime(start, config['datetime_str_format']), delta='7d', chart_type=2)
 
 @cli.command()
-def day_statistic():
+def day_stat():
     start = datetime.now()
     start -= timedelta(hours=start.hour, minutes=start.minute, seconds=start.second)
     get_stats_foo(start_time=datetime.strftime(start, config['datetime_str_format']), delta='1d', chart_type=3)
-
 
 if __name__ == '__main__':
     cli()
