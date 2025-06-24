@@ -1,5 +1,5 @@
-from sqlalchemy import extract, func
-from models import LifePeriod, Process
+from sqlalchemy import extract, func, create_engine, select
+from models import LifePeriod, Process, ProcessType
 from sqlalchemy.orm import Session
 from schemas import *
 from typing import List
@@ -39,3 +39,27 @@ class Repository:
                 .order_by(extract('day', LifePeriod.start)))
         valid_query = [DailyTimeSchema(name=i[0], delta=i[1], day=i[2]) for i in query]
         return valid_query
+    
+    def add_app(self, name: str, type_name: int) -> None:
+        with Session(self.eng) as session:
+            type = session.scalars(
+                select(ProcessType).where(ProcessType.name == type_name)
+                ).first()
+            procs = Process(name=name, type_id=type.id)
+            session.add(procs)
+            session.commit()
+
+    def delete_app(self, name: str) -> None:
+        with Session(self.eng) as session:
+            procs = session.scalars(
+                select(Process).where(Process.name == name)
+                ).first()
+            if procs is None:
+                return False
+            session.delete(procs)
+        session.commit()
+        return True
+    
+    def get_apps(self) -> List[Process]:
+        with Session(self.eng) as session:
+            return list(session.scalars(select(Process)))

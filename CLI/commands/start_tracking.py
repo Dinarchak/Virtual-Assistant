@@ -1,7 +1,7 @@
 import psutil
 import os
 from typing import List, Dict
-from models import Process, LifePeriod
+from db.models import Process, LifePeriod
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session

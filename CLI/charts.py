@@ -1,6 +1,6 @@
 from settings import config
 from matplotlib.ticker import MultipleLocator
-from repository import Repository
+from db.repository import Repository
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import numpy as np

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from settings import config
 from datetime import timedelta, datetime
-from db.charts import Chart
+from charts import Chart
 
 
 def get_stats(start_time=None, end_time=None, delta='1d', chart_type=0):

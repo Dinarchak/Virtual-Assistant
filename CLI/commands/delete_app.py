@@ -1,24 +1,16 @@
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
-from models import Process
+from sqlalchemy import create_engine
+from db import Repository
 from settings import config
 import click
 
 
-def delete_app(names: str) -> None:
+def delete_app(name: str) -> None:
     """Удаляет программу из списка отслеживаемых
 
     Args:
         names (str): имя программы
     """
     engine = create_engine(config['db_url'])
-    with Session(engine) as session:
-        for procs_name in names:
-            procs = session.scalars(
-                select(Process).where(Process.name == procs_name)
-                ).first()
-            if procs is None:
-                click.echo(f'Процесса с именем {procs_name} нет в списке отслеживаемых')
-                return
-            session.delete(procs)
-        session.commit()
+    repo = Repository(engine)
+    if repo.delete_app(name):
+        click.echo(f'Процесса с именем {name} нет в списке отслеживаемых')

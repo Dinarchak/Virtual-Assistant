@@ -9,17 +9,11 @@
         "48": "icons/beasts-48.png"
     },
 
-    "permissions": ["activeTab"],
+    "permissions": ["tabs"],
 
     "browser_action": {
         "default_icon": "icons/beasts-32-ligh.png",
         "default_title": "Beastify",
         "default_popup": "popup/choose_beast.html"
-    },
-
-    "web_accessible_resources": [
-        "frog.png",
-        "snake.png",
-        "turtle.png"
-    ]
+    }
 }
