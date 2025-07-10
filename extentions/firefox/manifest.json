@@ -9,11 +9,17 @@
         "48": "icons/beasts-48.png"
     },
 
-    "permissions": ["tabs"],
+    "permissions": ["tabs", "storage"],
 
     "browser_action": {
-        "default_icon": "icons/beasts-32-ligh.png",
+        "default_icon": "icons/beasts-32-light.png",
         "default_title": "Beastify",
-        "default_popup": "popup/choose_beast.html"
+        "default_popup": "popup/set_mode.html"
+    },
+
+    "background": {
+        "scripts": ["background_scripts/get_opened_tabs.js"],
+        "persistent": true,
+        "type": "module"
     }
 }

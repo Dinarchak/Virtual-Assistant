@@ -1,5 +1,10 @@
 from sqlalchemy import extract, func, create_engine, select
-from models import LifePeriod, Process, ProcessType
+from .models import LifePeriod, Process, ProcessType
+from .schemas import (
+    BarQuerySchema,
+    ScaleQuerySchema,
+    DailyTimeSchema
+)
 from sqlalchemy.orm import Session
 from schemas import *
 from typing import List
@@ -61,5 +66,14 @@ class Repository:
         return True
     
     def get_apps(self) -> List[Process]:
+        with Session(self.eng) as session:
+            return list(session.scalars(select(Process)))
+        
+    def record_app_life_periods(self, closed_list: List[LifePeriod]) -> None:
+        with Session(self.eng) as session:
+            session.add_all(closed_list)
+            session.commit()
+
+    def get_all_processes(self) -> List[Process]:
         with Session(self.eng) as session:
             return list(session.scalars(select(Process)))

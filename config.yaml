@@ -1,3 +1,4 @@
 db_url: 'sqlite:///db.sqlite3'
 datetime_str_format: '%d-%m-%Y %H:%M'
-port: 2000
+datetime_str_format_js: '%d-%m-%Y %H:%M'
+port: 8080

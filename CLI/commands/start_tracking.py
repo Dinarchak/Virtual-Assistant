@@ -2,6 +2,7 @@ import psutil
 import os
 from typing import List, Dict
 from db.models import Process, LifePeriod
+from db.repository import Repository
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
@@ -71,10 +72,11 @@ def process_end_callback(procs: psutil.Process) -> None:
 def start_tracking() -> None:
     """Мониторинг работы процессов.
     """
+    repo = Repository()
+
     engine = create_engine(config['db_url'], echo=True)
     with Session(engine) as session:
-        all_processes = list(session.scalars(select(Process)))
-        print(type(all_processes), all_processes)
+        all_processes = repo.get_all_processes()
         for procs in all_processes:
             process_ids[procs.name] = procs.id
         while True:
@@ -86,5 +88,4 @@ def start_tracking() -> None:
                               timeout=5)
             # записать в БД завершенные периоды работы процессов
             if len(closed_list) > 0:
-                session.add_all(closed_list)
-                session.commit()
+                repo.record_app_life_periods(closed_list)
