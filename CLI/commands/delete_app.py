@@ -12,5 +12,5 @@ def delete_app(name: str) -> None:
     """
     engine = create_engine(config['db_url'])
     repo = Repository(engine)
-    if repo.delete_app(name):
+    if not repo.delete_app(name):
         click.echo(f'Процесса с именем {name} нет в списке отслеживаемых')

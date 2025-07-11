@@ -9,3 +9,5 @@ CONFIG_PATH = BASE_DIR + '\\config.yaml'
 
 with open(CONFIG_PATH) as f:
     config = yaml.safe_load(f)
+
+config['db_url'] = f'sqlite:///{BASE_DIR}\\db.sqlite3'

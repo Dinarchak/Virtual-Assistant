@@ -72,20 +72,19 @@ def process_end_callback(procs: psutil.Process) -> None:
 def start_tracking() -> None:
     """Мониторинг работы процессов.
     """
-    repo = Repository()
-
     engine = create_engine(config['db_url'], echo=True)
-    with Session(engine) as session:
-        all_processes = repo.get_all_processes()
-        for procs in all_processes:
-            process_ids[procs.name] = procs.id
-        while True:
-            closed_list.clear()
-            processes = find_procs_by_name(all_processes)
-            # каждые 5 секунд проверяет, какие процессы работают
-            psutil.wait_procs(processes,
-                              callback=process_end_callback,
-                              timeout=5)
-            # записать в БД завершенные периоды работы процессов
-            if len(closed_list) > 0:
-                repo.record_app_life_periods(closed_list)
+    repo = Repository(engine)
+
+    all_processes = repo.get_all_processes()
+    for procs in all_processes:
+        process_ids[procs.name] = procs.id
+    while True:
+        closed_list.clear()
+        processes = find_procs_by_name(all_processes)
+        # каждые 5 секунд проверяет, какие процессы работают
+        psutil.wait_procs(processes,
+                            callback=process_end_callback,
+                            timeout=5)
+        # записать в БД завершенные периоды работы процессов
+        if len(closed_list) > 0:
+            repo.record_app_life_periods(closed_list)

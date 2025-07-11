@@ -6,8 +6,7 @@ from .schemas import (
     DailyTimeSchema
 )
 from sqlalchemy.orm import Session
-from schemas import *
-from typing import List
+from typing import List, Tuple
 
 
 class Repository:
@@ -45,24 +44,25 @@ class Repository:
         valid_query = [DailyTimeSchema(name=i[0], delta=i[1], day=i[2]) for i in query]
         return valid_query
     
-    def add_app(self, name: str, type_name: int) -> None:
+    def add_app(self, name: str, types_list: Tuple[str]) -> None:
         with Session(self.eng) as session:
-            type = session.scalars(
-                select(ProcessType).where(ProcessType.name == type_name)
-                ).first()
-            procs = Process(name=name, type_id=type.id)
+            types = session.scalars(
+                select(ProcessType).where(ProcessType.name.in_(types_list))
+                ).all()
+            procs = Process(name=name, types=types)
             session.add(procs)
             session.commit()
 
-    def delete_app(self, name: str) -> None:
+    def delete_app(self, names: Tuple[str]) -> None:
         with Session(self.eng) as session:
             procs = session.scalars(
-                select(Process).where(Process.name == name)
-                ).first()
+                select(Process).where(Process.name.in_(names))
+                ).all()
             if procs is None:
                 return False
-            session.delete(procs)
-        session.commit()
+            for proc in procs:
+                session.delete(proc)
+            session.commit()
         return True
     
     def get_apps(self) -> List[Process]:
@@ -74,6 +74,13 @@ class Repository:
             session.add_all(closed_list)
             session.commit()
 
-    def get_all_processes(self) -> List[Process]:
+    def get_all_processes(self) -> Tuple[Process]:
         with Session(self.eng) as session:
-            return list(session.scalars(select(Process)))
+            return session.scalars(select(Process)).all()
+        
+    def get_all_sites(self) -> Tuple[Process]:
+        with Session(self.eng) as session:
+            return session.scalars(select(Process)
+                                   .join(Process.types)
+                                   .where(ProcessType.name == 'site')
+                                   ).all()

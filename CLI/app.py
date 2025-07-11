@@ -12,10 +12,10 @@ def cli():
     pass
 
 @cli.command()
-@click.option('-t', '--type', help='Категория программы', required=True)
+@click.argument('types', nargs=-1)
 @click.option('-n', '--name', help='Имя программы', required=True)
-def add(type, name):
-    add_app_foo(name, type)
+def add(types, name):
+    add_app_foo(name, types)
     click.echo(f"Программа '{name}' добавлена в список отслеживаемых")
 
 @cli.command(name='del')
