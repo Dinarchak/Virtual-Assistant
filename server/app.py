@@ -20,7 +20,7 @@ app.on_startup.append(on_startup)
 @routes.post('/upd_stat')
 async def update_stat(request):
     data = await request.json()
-    tabs_info = [TabInfoSchema(
+    open_tabs = [TabInfoSchema(
             url=i,
             time=datetime.strptime(
                 data['time'],
@@ -31,16 +31,10 @@ async def update_stat(request):
 
     all_sites = app['repo'].get_all_sites()
     sites_ids: tp.Dict[str, int] = {}
-    sites_pattern = {}
 
     for procs in all_sites:
         sites_ids[procs.name] = procs.id
 
-    for i in tabs_info:
-        for url_pattern in sites_ids.keys():
-            if url_pattern in i.url:
-                sites_pattern[i.url] = url_pattern
-                break
     to_remove = []
     for i in app['tabs']:
         corresponding_pattern = None
@@ -49,7 +43,7 @@ async def update_stat(request):
                 corresponding_pattern = pattern
                 break
         
-        if corresponding_pattern is not None and i not in tabs_info:
+        if corresponding_pattern is not None and i not in open_tabs:
             print(f'сайт {i.url} закрыт.')
             closed_list.append(LifePeriod(
                 start=i.time,
@@ -65,7 +59,7 @@ async def update_stat(request):
     if len(closed_list) > 0:
         app['repo'].record_app_life_periods(closed_list)
             
-    for i in tabs_info:
+    for i in open_tabs:
         if i not in app['tabs']:
             app['tabs'].append(i)
 

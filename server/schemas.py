@@ -1,8 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, AnyHttpUrl
 from datetime import datetime
 
 class TabInfoSchema(BaseModel):
-    url: str
+    url: AnyHttpUrl
     time: datetime
 
     def __eq__(self, other):
